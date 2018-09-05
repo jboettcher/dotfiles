@@ -1,0 +1,26 @@
+Host naskemper
+User boettcher
+HostName naskemper3.informatik.tu-muenchen.de
+
+Host webkemper
+User boettcher
+HostName webkemper1.informatik.tu-muenchen.de
+
+Host scyper12
+User boettcher
+HostName scyper12.informatik.tu-muenchen.de
+
+Host scyper13
+User boettcher
+HostName scyper13.informatik.tu-muenchen.de
+
+Host scyper1
+User boettcher
+HostName scyper1.informatik.tu-muenchen.de
+
+
+Host skylakex
+HostName atkemper4.informatik.tu-muenchen.de
+
+Host *
+User boettcher
