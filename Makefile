@@ -31,7 +31,7 @@ install-fzf:
 	if [ ! -d $(FZF_DIR) ]; then \
 		git clone --depth 1 https://github.com/junegunn/fzf.git $(FZF_DIR); \
 	fi
-	$(FZF_DIR)/install --bin
+	$(FZF_DIR)/install
 #---------------------------------------------------------------------------
 install-vim-plug:
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
