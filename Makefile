@@ -33,10 +33,21 @@ install-fzf:
 	fi
 	$(FZF_DIR)/install
 #---------------------------------------------------------------------------
+install-neovim:
+	sudo add-apt-repository ppa:neovim-ppa/stable -y
+	sudo apt-get update -y
+	sudo apt-get install neovim -y
+#---------------------------------------------------------------------------
 install-vim-plug:
+	# Vim
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	# NeoVim
+	curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 #---------------------------------------------------------------------------
 install-monokai:
 	mkdir -p ~/.vim/colors
 	cd ~/.vim/colors && wget https://raw.githubusercontent.com/sickill/vim-monokai/master/colors/monokai.vim
+	mkdir -p ~/.config/nvim/colors
+	cd ~/.config/nvim/colors && wget https://raw.githubusercontent.com/sickill/vim-monokai/master/colors/monokai.vim
