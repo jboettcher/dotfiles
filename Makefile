@@ -14,7 +14,7 @@ install-config:
 	cp tmux.conf ~/.tmux.conf
 	mkdir -p ~/.ssh && cp ssh.conf ~/.ssh/config
 	cp vim.conf ~/.vimrc
-	cp vim.conf ~/.config/nvim/init.vim
+	mkdir -p ~/.config/nvim && cp vim.conf ~/.config/nvim/init.vim
 	cp bash.conf ~/.bashrc
 #---------------------------------------------------------------------------
 install-ccls:
