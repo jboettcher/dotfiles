@@ -1,5 +1,5 @@
 #!/bin/bash
-CCLS_VERSION := c2cc556
+CCLS_VERSION := 3810fb0
 CCLS_REPO_DIR := ~/.ccls/repo
 CCLS_BUILD_DIR := ~/.ccls/build
 CCLS_INSTALL_PREFIX := ~/.local
