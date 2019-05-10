@@ -1,0 +1,14 @@
+{
+"languageserver": {
+   "ccls": {
+     "command": "~/.local/bin/ccls",
+     "filetypes": ["c", "cpp", "objc", "objcpp", "h", "hpp", "c"],
+     "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+     "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        }
+      }
+   }
+ }
+}

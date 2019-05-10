@@ -1,5 +1,5 @@
 #!/bin/bash
-CCLS_VERSION := 3810fb0
+CCLS_VERSION := 1976fec
 CCLS_REPO_DIR := ~/.ccls/repo
 CCLS_BUILD_DIR := ~/.ccls/build
 CCLS_INSTALL_PREFIX := ~/.local
@@ -15,6 +15,7 @@ install-config:
 	mkdir -p ~/.ssh && cp ssh.conf ~/.ssh/config
 	cp vim.conf ~/.vimrc
 	mkdir -p ~/.config/nvim && cp vim.conf ~/.config/nvim/init.vim
+	cp coc-settings.json ~/.config/nvim/coc-settings.json
 	cp bash.conf ~/.bashrc
 #---------------------------------------------------------------------------
 install-ccls:
