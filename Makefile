@@ -14,7 +14,7 @@ install-config:
 	cp tmux.conf ~/.tmux.conf
 	mkdir -p ~/.ssh && cp ssh.conf ~/.ssh/config
 	cp vim.conf ~/.vimrc
-	mkdir -p ~/.config/nvim && cp vim.conf ~/.config/nvim/init.vim
+	mkdir -p ~/.config/nvim && cd ~/.config/nvim && ln -s ~/dotfiles/vim.conf init.vim
 	cp coc-settings.json ~/.config/nvim/coc-settings.json
 	cp bash.conf ~/.bashrc
 #---------------------------------------------------------------------------
