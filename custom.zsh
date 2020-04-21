@@ -1,5 +1,21 @@
 alias vim="nvim"
+alias fd=fdfind
 export EDITOR="nvim"
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export LANG=en_US.utf-8
-export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
+
+case `uname` in
+  Darwin)
+    # commands for OS X go here
+       export MAKEFLAGS="-j $(sysctl -n hw.ncpu)"
+       export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  ;;
+  Linux)
+    # commands for Linux go here
+       alias fd=fdfind
+       export MAKEFLAGS="-j $(nproc)"
+       export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
+  ;;
+  FreeBSD)
+    # commands for FreeBSD go here
+  ;;
+esac
