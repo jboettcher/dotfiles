@@ -1,22 +1,32 @@
-#!/bin/bash
 CCLS_VERSION := a655ca9
 CCLS_REPO_DIR := ~/.ccls/repo
 CCLS_BUILD_DIR := ~/.ccls/build
 CCLS_INSTALL_PREFIX := ~/.local
 FZF_DIR := ~/.fzf
+MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
+MAKEFILE_DIR := $(dir ${MAKEFILE_PATH})
 #---------------------------------------------------------------------------
 install-packages:
 	sudo apt-get install libncurses5-dev ninja-build python3-pip tmux cmake gdb
 #---------------------------------------------------------------------------
 install-config:
-	cp git.conf ~/.gitconfig
-	cp gdb.conf ~/.gdbinit
-	cp tmux.conf ~/.tmux.conf
-	mkdir -p ~/.ssh && cp ssh.conf ~/.ssh/config
-	cp vim.conf ~/.vimrc
-	mkdir -p ~/.config/nvim && cd ~/.config/nvim && ln -s ~/dotfiles/vim.conf init.vim
-	cp coc-settings.json ~/.config/nvim/coc-settings.json
-	cp bash.conf ~/.bashrc
+	@ln -sf ${MAKEFILE_DIR}/git.conf ${HOME}/.gitconfig
+	@ln -sf ${MAKEFILE_DIR}/gdb.conf ${HOME}/.gdbinit
+	@ln -sf ${MAKEFILE_DIR}/tmux.conf ${HOME}/.tmux.conf
+	mkdir -p ${HOME}/.ssh && ln -sf ssh.conf ${HOME}/.ssh/config
+	mkdir -p ${HOME}/.config/nvim
+	@ln -sf ${HOME}/dotfiles/vim.conf ${HOME}/.config/nvim/init.vim
+	@ln -sf ${MAKEFILE_DIR}/coc-settings.json ${HOME}/.config/nvim/coc-settings.json
+	@ln -sf ${MAKEFILE_DIR}/custom.zsh ${HOME}/.oh-my-zsh/custom/custom.zsh
+	@ln -sf ${MAKEFILE_DIR}/plugins.zsh ${HOME}/.oh-my-zsh/custom/plugins.zsh
+#---------------------------------------------------------------------------
+install-zsh:
+	sudo apt install zsh
+	sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+	# disable plugins from main .zshrc to load custom plugin settings
+	sed -i.bak 's/^plugins=.*/source ~\/.oh-my-zsh\/custom\/plugins.zsh/' ~/.zshrc
 #---------------------------------------------------------------------------
 install-ccls:
 	pip3 install --user --upgrade pynvim
