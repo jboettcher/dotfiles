@@ -13,6 +13,7 @@ case `uname` in
        alias fd=fdfind
        export MAKEFLAGS="-j $(nproc)"
        export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
+       alias cppmake='~/Programs/cppmake/bin/cppmake'
   ;;
   FreeBSD)
     # commands for FreeBSD go here
