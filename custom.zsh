@@ -2,6 +2,15 @@ alias vim="nvim"
 export EDITOR="nvim"
 export LANG=en_US.utf-8
 
+case "$USER" in
+  caravan)
+     export DATA='~/volume'
+     ;;
+  *)
+     export DATA='~'
+     ;;
+esac
+
 case `uname` in
   Darwin)
     # commands for OS X go here
