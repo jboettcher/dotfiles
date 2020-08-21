@@ -14,6 +14,8 @@ case `uname` in
        export MAKEFLAGS="-j $(nproc)"
        export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
        alias cppmake='~/Programs/cppmake/bin/cppmake'
+       alias open='gio open'
+       export PATH="/usr/lib/ccache/bin/:$PATH"
   ;;
   FreeBSD)
     # commands for FreeBSD go here
