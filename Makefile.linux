@@ -1,4 +1,4 @@
-CCLS_VERSION := 4808ccb
+CCLS_VERSION := 1fec76c
 CCLS_REPO_DIR := ~/.ccls/repo
 CCLS_BUILD_DIR := ~/.ccls/build
 CCLS_INSTALL_PREFIX := ~/.local
@@ -30,6 +30,7 @@ install-ohmyzsh:
 #---------------------------------------------------------------------------
 install-ccls:
 	pip3 install --user --upgrade pynvim
+	sudo apt install libclang-9-dev # TODO might become obsolete in future
 	rm -rf $(CCLS_REPO_DIR) $(CCLS_BUILD_DIR)
 	git clone --recursive https://github.com/MaskRay/ccls $(CCLS_REPO_DIR)
 	cd $(CCLS_REPO_DIR) && git checkout $(CCLS_VERSION)
