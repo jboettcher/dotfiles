@@ -8,7 +8,7 @@ MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 MAKEFILE_DIR := $(dir ${MAKEFILE_PATH})
 #---------------------------------------------------------------------------
 install-packages:
-	sudo apt-get install libncurses5-dev ninja-build python3-pip tmux cmake gdb zsh fd-find
+	sudo apt-get install libncurses5-dev ninja-build python3-pip tmux cmake gdb zsh fd-find libclang-dev
 #---------------------------------------------------------------------------
 install-config:
 	@ln -sf ${MAKEFILE_DIR}/git.conf ${HOME}/.gitconfig
