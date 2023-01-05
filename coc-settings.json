@@ -6,7 +6,10 @@
      "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
      "initializationOptions": {
         "cache": {
-          "directory": "/tmp/ccls"
+          "directory": ".ccls-cache"
+        },
+        "clang": {
+          "extraArgs": [ "-std=c++20" ]
         }
       }
    }

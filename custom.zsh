@@ -24,7 +24,11 @@ case `uname` in
        export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
        alias cppmake='~/Programs/cppmake/bin/cppmake'
        alias open='gio open'
-       export PATH="/usr/lib/ccache/bin/:$PATH"
+       export PATH="/usr/lib/ccache:$PATH"
+       if [ -d "$HOME/.local/bin" ] ; then
+          PATH="$PATH:$HOME/.local/bin"
+       fi
+       alias idea='/home/j.boettcher/Programs/idea-IC-223.7571.182/bin/idea.sh'
   ;;
   FreeBSD)
     # commands for FreeBSD go here
