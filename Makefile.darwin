@@ -27,7 +27,7 @@ install-fzf:
 	brew install fzf
 	echo "run the key binding install command!"
 #---------------------------------------------------------------------------
-install-ls-cc:
+install-ccls:
 	rm -rf $(CCLS_REPO_DIR) $(CCLS_BUILD_DIR)
 	git clone --recursive https://github.com/MaskRay/ccls $(CCLS_REPO_DIR)
 	cd $(CCLS_REPO_DIR) && git checkout $(CCLS_VERSION)
