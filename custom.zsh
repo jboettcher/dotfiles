@@ -25,6 +25,10 @@ case `uname` in
        alias cppmake='~/Programs/cppmake/bin/cppmake'
        alias open='gio open'
        export PATH="/usr/lib/ccache:$PATH"
+       export CCACHE_PREFIX=homcc
+       export LINKER=lld
+       export HOMCC_DOCKER_CONTAINER=ubuntu2204-clang14
+
        if [ -d "$HOME/.local/bin" ] ; then
           PATH="$PATH:$HOME/.local/bin"
        fi
