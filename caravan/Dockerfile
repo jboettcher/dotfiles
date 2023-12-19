@@ -1,4 +1,4 @@
-FROM ubuntu:19.10
+FROM ubuntu:23.04
 
 # Install core packages
 RUN apt-get update -qq \
@@ -6,7 +6,7 @@ RUN apt-get update -qq \
         sudo openssh-server tmux neovim git curl locales tig exuberant-ctags \
         build-essential binutils make cmake clang clang-format lld ninja-build ccache bison gdb lldb libsystemd-dev \
         linux-tools-common linux-tools-generic \
-        python-pip python3-pip \
+        python3-pip \
         htop golang \
         unzip \
         fd-find \
@@ -18,7 +18,7 @@ RUN apt-get update -qq \
 # Install dev packages
 RUN apt-get update -qq \
     && apt-get install -y \
-        llvm-9 libasan5 libboost-all-dev libc6-dev libclang-9-dev libjemalloc-dev libssl-dev libtinfo-dev \
+        llvm libasan5 libboost-all-dev libc-dev libclang-dev libjemalloc-dev libssl-dev libtinfo-dev \
         libpthread-stubs0-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -36,13 +36,12 @@ RUN locale-gen en_US.UTF-8 \
     && echo "LANG=en_US.UTF-8" > /etc/locale.conf
 
 # Configure SSH server
-RUN mkdir /var/run/sshd \
-    && sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config \
-    && sed -i 's/session\s*required\s*pam_loginuid.so/session optional pam_loginuid.so/g' /etc/pam.d/sshd
+#RUN mkdir /var/run/sshd \
+#    && sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config \
+#    && sed -i 's/session\s*required\s*pam_loginuid.so/session optional pam_loginuid.so/g' /etc/pam.d/sshd
 
 # Install neovim
-RUN add-apt-repository ppa:neovim-ppa/stable -y \
-	 && apt-get update -y \
+RUN apt-get update -y \
     && apt-get install -y \
        neovim \
        nodejs \
@@ -64,7 +63,7 @@ RUN cd .dotfiles \
     && make install-ohmyzsh \
     && make install-config \
     && make install-fzf install-ccls  \
-    && chmod +x ./caravan/entrypoint.sh
+    && chmod +x ./entrypoint.sh
 
 # Setup neovim
 RUN cd ~/.dotfiles && make install-vim-plug \

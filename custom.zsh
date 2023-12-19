@@ -27,7 +27,10 @@ case `uname` in
        export PATH="/usr/lib/ccache:$PATH"
        export CCACHE_PREFIX=homcc
        export LINKER=lld
-       export HOMCC_DOCKER_CONTAINER=ubuntu2204-clang14
+       export HOMCC_DOCKER_CONTAINER=ubuntu2204-clang17
+       alias ninja-gcc-11='CC=gcc-11 CXX=g++-11 CCACHE_PREFIX=homcc LINKER=lld HOMCC_DOCKER_CONTAINER=ubuntu2204-gcc11 ninja -j 60'
+       export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64
+       export VAULT_SKIP_VERIFY=1
 
        if [ -d "$HOME/.local/bin" ] ; then
           PATH="$PATH:$HOME/.local/bin"
