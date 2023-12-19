@@ -1,0 +1,31 @@
+# Template instantiations of member
+
+namespace {
+template <typename... Ts>
+constexpr auto instantiate() {
+  return std::tuple_cat(std::make_tuple(&class_name::method<Ts>)...);
+}
+
+// These instantiations have to match the values appearing in the get_type_id function
+constexpr auto function_templates __attribute__((used)) =
+    instantiate<int32_t, uint16_t, uint32_t, uint64_t>();
+
+}  // namespace
+
+
+# If the methods are overloaded
+
+namespace {
+
+template <typename... Ts>
+constexpr auto instantiate() {
+  return std::tuple_cat(std::make_tuple(
+      static_cast<ret_type (class_name::*)(int arg1, int arg2)>( &class_name::add_column),
+      static_cast<ret_type (class_name::*)(std::string arg)>(&class_name::add_column))...);
+}
+
+constexpr auto function_templates __attribute__((used)) =
+    instantiate<int, short, double>();
+
+}  // namespace
+
