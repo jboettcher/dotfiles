@@ -24,13 +24,7 @@ case `uname` in
        export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
        alias cppmake='~/Programs/cppmake/bin/cppmake'
        alias open='gio open'
-       export PATH="/usr/lib/ccache:$PATH"
-       export CCACHE_PREFIX=homcc
        export LINKER=lld
-       export HOMCC_DOCKER_CONTAINER=ubuntu2204-clang17
-       alias ninja-gcc-11='CC=gcc-11 CXX=g++-11 CCACHE_PREFIX=homcc LINKER=lld HOMCC_DOCKER_CONTAINER=ubuntu2204-gcc11 ninja -j 60'
-       export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64
-       export VAULT_SKIP_VERIFY=1
 
        if [ -d "$HOME/.local/bin" ] ; then
           PATH="$PATH:$HOME/.local/bin"
@@ -41,3 +35,26 @@ case `uname` in
     # commands for FreeBSD go here
   ;;
 esac
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# CTRL-O: find bazel target with fzf
+__target_sel() {
+  local cmd="./bzl.py query '//...' 2> /dev/null"
+  setopt localoptions pipefail no_aliases 2> /dev/null
+  local item
+  eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse --bind=ctrl-z:ignore $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS" $(__fzfcmd) -m "$@" | while read item; do
+    echo -n "${(q)item} "
+  done
+  local ret=$?
+  echo
+  return $ret
+}
+fzf-bazel-widget() {
+  LBUFFER="${LBUFFER}$(__target_sel)"
+  local ret=$?
+  zle reset-prompt
+  return $ret
+}
+zle     -N   fzf-bazel-widget
+bindkey '^o' fzf-bazel-widget
