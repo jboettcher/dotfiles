@@ -8,7 +8,7 @@ MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 MAKEFILE_DIR := $(dir ${MAKEFILE_PATH})
 #---------------------------------------------------------------------------
 install-packages:
-	sudo apt-get install libncurses5-dev ninja-build python3-pip tmux cmake gdb zsh fd-find libclang-dev
+	sudo apt-get install libncurses5-dev ninja-build python3-pip tmux cmake gdb zsh fd-find libclang-dev nodejs cgdb
 #---------------------------------------------------------------------------
 install-config:
 	@ln -sf ${MAKEFILE_DIR}/git.conf ${HOME}/.gitconfig
@@ -16,7 +16,7 @@ install-config:
 	@ln -sf ${MAKEFILE_DIR}/tmux.conf ${HOME}/.tmux.conf
 	mkdir -p ${HOME}/.ssh && ln -sf ${MAKEFILE_DIR}/ssh.conf ${HOME}/.ssh/config
 	mkdir -p ${HOME}/.config/nvim
-	@ln -sf ${MAKEFILE_DIR}/vim.conf ${HOME}/.config/nvim/init.vim
+	@ln -sf ${MAKEFILE_DIR}/vim.lua ${HOME}/.config/nvim/init.lua
 	@ln -sf ${MAKEFILE_DIR}/coc-settings.json ${HOME}/.config/nvim/coc-settings.json
 	@ln -sf ${MAKEFILE_DIR}/custom.zsh ${HOME}/.oh-my-zsh/custom/custom.zsh
 	@ln -sf ${MAKEFILE_DIR}/plugins.zsh ${HOME}/.oh-my-zsh/custom/plugins.zsh
@@ -51,9 +51,10 @@ install-fzf:
 	$(FZF_DIR)/install
 #---------------------------------------------------------------------------
 install-neovim:
-	sudo add-apt-repository ppa:neovim-ppa/stable -y
-	sudo apt-get update -y
-	sudo apt-get install neovim -y
+	wget https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+	tar xvzf nvim-linux64.tar.gz
+	rm nvim-linux64.tar.gz
+	sudo ln -s ~/dotfiles/nvim-linux64/bin/nvim /usr/local/bin
 #---------------------------------------------------------------------------
 install-vim-plug:
 	# Vim
