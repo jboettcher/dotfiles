@@ -117,6 +117,9 @@ Plug 'scrooloose/nerdtree' -- file tree explorer
 Plug 'godlygeek/tabular' -- text aligning; http://media.vimcasts.org/videos/29/alignment.ogv
 -- languages/syntax highlighting
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'}) -- Treesitter
+-- Git
+Plug 'tpope/vim-fugitive'  -- all vim commands Gdiff, Gblame, ...
+Plug 'airblade/vim-gitgutter' -- shows changed lines in left column
 -- Language server support
 Plug 'neovim/nvim-lspconfig' -- LSP config
 Plug 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
