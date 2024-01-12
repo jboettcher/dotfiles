@@ -63,6 +63,12 @@ vim.keymap.set("n", "Q", "")
 vim.keymap.set("n", "x", '"_x')
 
 
+-----------------------
+-- Enhanced keyboard mappings
+vim.keymap.set('n', 'tc', ':tabnew<CR>')
+vim.keymap.set('n', 'tp', ':tabprevious<CR>')
+vim.keymap.set('n', 'tn', ':tabnext<CR>')
+
 --------------------------
 -- General, useful shortcuts
 --------------------------
@@ -323,7 +329,7 @@ nvim_lsp["clangd"].setup {
   -- to debug: '-log:verbose'
   -- --hidden-features
   -- cmd = { 'clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
-  cmd = { '~/hyper-db/bazel-hyper-db/external/clang_linux/bin/clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
+  cmd = { '/home/ubuntu/hyper-db/bazel-hyper-db/external/clang_linux/bin/clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
   on_attach = on_attach,
   flags = {
     debounce_text_changes = 1000,
