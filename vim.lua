@@ -327,17 +327,29 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end
 })
 
-nvim_lsp["clangd"].setup {
-  capabilities = require('cmp_nvim_lsp').default_capabilities(),
-  -- to debug: '-log:verbose'
-  -- --hidden-features
-  -- cmd = { 'clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
-  cmd = { '/home/ubuntu/hyper-db/bazel-hyper-db/external/clang_linux/bin/clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
-  on_attach = on_attach,
-  flags = {
-    debounce_text_changes = 1000,
+
+vim.lsp.set_log_level("debug")
+local lspconfig = require'lspconfig'
+lspconfig.ccls.setup {
+  init_options = {
+    compilationDatabaseDirectory = "bazel-bin";
+    index = {
+      threads = 10;
+    };
   }
 }
+
+--nvim_lsp["clangd"].setup {
+--  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+--  -- to debug: '-log:verbose'
+--  -- --hidden-features
+--  --cmd = { '/usr/lib/llvm-17/bin/clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
+--  cmd = { '/home/ubuntu/hyper-db/bazel-hyper-db/external/clang_linux/bin/clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
+--  on_attach = on_attach,
+--  flags = {
+--    debounce_text_changes = 1000,
+--  }
+--}
 
 vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
   local client = vim.lsp.get_client_by_id(ctx.client_id)

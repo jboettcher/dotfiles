@@ -1,8 +1,8 @@
-CCLS_VERSION := 7445891
+CCLS_VERSION := f36ecb0
 CCLS_REPO_DIR := ~/.ccls/repo
 CCLS_BUILD_DIR := ~/.ccls/build
 CCLS_INSTALL_PREFIX := ~/.local
-LLVM_PREFIX_PATH := /usr/lib/llvm-14/lib/cmake
+LLVM_PREFIX_PATH := /usr/lib/llvm-16/lib/cmake
 FZF_DIR := ~/.fzf
 MAKEFILE_PATH := $(abspath $(lastword ${MAKEFILE_LIST}))
 MAKEFILE_DIR := $(dir ${MAKEFILE_PATH})
