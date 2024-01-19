@@ -115,6 +115,9 @@ Plug 'nvim-telescope/telescope-ui-select.nvim' -- integration of LSP into Telesc
 Plug 'rcarriga/nvim-notify' -- LSP notifications
 Plug 'scrooloose/nerdtree' -- file tree explorer
 Plug 'godlygeek/tabular' -- text aligning; http://media.vimcasts.org/videos/29/alignment.ogv
+Plug 'Raimondi/delimitMate' -- automatically add matchin delimiters
+Plug 'easymotion/vim-easymotion' -- jump to characters in file quickly
+Plug 'ntpeters/vim-better-whitespace' -- remove trailing white spaces
 -- languages/syntax highlighting
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'}) -- Treesitter
 -- Git
@@ -147,6 +150,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 --Nerdree
 vim.keymap.set("n", "<C-n>", ":NERDTreeToggle<CR>")
+
+-- Easymotion
+vim.keymap.set('n', 's', '<Plug>(easymotion-overwin-f2)')
+
+vim.g.strip_whitespace_confirm = 0
+vim.g.strip_whitespace_on_save = 1
 
 --------------------------------------------
 -- Telescope
@@ -328,28 +337,39 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 
-vim.lsp.set_log_level("debug")
-local lspconfig = require'lspconfig'
-lspconfig.ccls.setup {
-  init_options = {
-    compilationDatabaseDirectory = "bazel-bin";
-    index = {
-      threads = 10;
-    };
+vim.lsp.set_log_level("info")
+
+--local lspconfig = require'lspconfig'
+--lspconfig.ccls.setup {
+--   name = "ccls", --String name
+--
+--}
+
+nvim_lsp["clangd"].setup {
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  -- to debug: '-log:verbose'
+  -- --hidden-features
+  --cmd = { '/usr/lib/llvm-17/bin/clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
+  cmd = {
+     'clangd-18',
+     '--enable-config',
+     '--limit-references=10000',
+     '--limit-results=10000',
+     '--parse-forwarding-functions',
+     '--compile-commands-dir=./bazel-bin/',
+     '--clang-tidy',
+     '--clang-tidy-checks=*',
+     '-j=14',
+     '--background-index',
+     '--pch-storage=True',
+     '--header-insertion-decorators',
+     '--header-insertion=iwyu'
+  },
+  on_attach = on_attach,
+  flags = {
+    debounce_text_changes = 1000,
   }
 }
-
---nvim_lsp["clangd"].setup {
---  capabilities = require('cmp_nvim_lsp').default_capabilities(),
---  -- to debug: '-log:verbose'
---  -- --hidden-features
---  --cmd = { '/usr/lib/llvm-17/bin/clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
---  cmd = { '/home/ubuntu/hyper-db/bazel-hyper-db/external/clang_linux/bin/clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
---  on_attach = on_attach,
---  flags = {
---    debounce_text_changes = 1000,
---  }
---}
 
 vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
   local client = vim.lsp.get_client_by_id(ctx.client_id)
