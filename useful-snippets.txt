@@ -28,4 +28,3 @@ constexpr auto function_templates __attribute__((used)) =
     instantiate<int, short, double>();
 
 }  // namespace
-
