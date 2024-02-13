@@ -44,11 +44,14 @@ vim.opt.writebackup = false
 -- Github limits commit messages to 72 characters per line
 -- vim.api.nvim_create_autocmd("BufRead,BufNewFile", {pattern = "COMMIT_EDITMSG", command = "setlocal textwidth=0"})
 
+-- enable spell checking
+vim.opt_global.spell = true
+
 --------------------------
 --command line autocompletion
 --------------------------
 vim.opt.wildmenu = true
-vim.opt.wildmode = longest,list
+vim.opt.wildmode = "longest,list"
 vim.opt.wildignore = "*.a,*.o"
 vim.opt.wildignore:append("*.bmp,*.gif,*.ico,*.jpg,*.png")
 vim.opt.wildignore:append(".DS_Store,.git,.hg,.svn")
@@ -92,6 +95,24 @@ vim.keymap.set("i", "jk", "<esc>")
 vim.keymap.set("n", "<leader>ev", ":split $MYVIMRC<cr>")
 vim.keymap.set("n", "<leader>sv", ":source $MYVIMRC<cr>")
 
+
+--------------------------
+--Set up plugin manager
+--------------------------
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
 --------------------------
 --Plugins
 --------------------------
@@ -99,40 +120,38 @@ vim.keymap.set("n", "<leader>sv", ":source $MYVIMRC<cr>")
 --TODO: textobj-argument
 --TODO: https://github.com/skywind3000/asynctasks.vim
 
-local Plug = vim.fn['plug#']
-
-vim.call('plug#begin')
--- Themes & general rendering
-Plug 'sjl/badwolf' -- badwolf theme
-Plug 'tomasr/molokai' -- molokai theme
-Plug 'kyazdani42/nvim-web-devicons' -- icons in Telescope
--- General editing/navigation
-Plug 'ojroques/nvim-osc52' -- copy-paste over ssh
-Plug 'nvim-lua/plenary.nvim' -- Dependency of other plugins
-Plug('nvim-telescope/telescope-fzf-native.nvim', { ['do'] = 'make' })
-Plug 'nvim-telescope/telescope.nvim' -- fuzzy matcher
-Plug 'nvim-telescope/telescope-ui-select.nvim' -- integration of LSP into Telescope
-Plug 'rcarriga/nvim-notify' -- LSP notifications
-Plug 'scrooloose/nerdtree' -- file tree explorer
-Plug 'godlygeek/tabular' -- text aligning; http://media.vimcasts.org/videos/29/alignment.ogv
-Plug 'Raimondi/delimitMate' -- automatically add matchin delimiters
-Plug 'easymotion/vim-easymotion' -- jump to characters in file quickly
-Plug 'ntpeters/vim-better-whitespace' -- remove trailing white spaces
--- languages/syntax highlighting
-Plug('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'}) -- Treesitter
--- Git
-Plug 'tpope/vim-fugitive'  -- all vim commands Gdiff, Gblame, ...
-Plug 'airblade/vim-gitgutter' -- shows changed lines in left column
--- Language server support
-Plug 'neovim/nvim-lspconfig' -- LSP config
-Plug 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
-Plug 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-Plug 'L3MON4D3/LuaSnip'
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'stevearc/dressing.nvim' -- nicer UI for code actions; unfortunately typrhas rendering errors
-Plug 'simrat39/symbols-outline.nvim' -- symbol outline of current file
-Plug 'mfussenegger/nvim-dap' --  Debug adapter
-vim.call('plug#end')
+require("lazy").setup({
+   -- Themes & general rendering
+  'sjl/badwolf', -- badwolf theme
+  'tomasr/molokai', -- molokai theme
+  'kyazdani42/nvim-web-devicons', -- icons in Telescope
+  -- Git
+  'tpope/vim-fugitive',  -- all vim commands Gdiff, Gblame, ...
+  'airblade/vim-gitgutter', -- shows changed lines in left column
+   -- General editing/navigation
+  'easymotion/vim-easymotion', -- jump to characters in file quickly
+  'ntpeters/vim-better-whitespace', -- remove trailing white spaces
+  'Raimondi/delimitMate', -- automatically add matchin delimiters
+  'nvim-lua/plenary.nvim', -- Dependency of other plugins
+  {'nvim-telescope/telescope-fzf-native.nvim', build = 'make', },
+  'nvim-telescope/telescope.nvim', -- fuzzy matcher
+  'nvim-telescope/telescope-ui-select.nvim', -- integration of LSP into Telescope
+  'nvim-tree/nvim-tree.lua', -- file tree explorer
+  'godlygeek/tabular', -- text aligning; http://media.vimcasts.org/videos/29/alignment.ogv
+   -- languages/syntax highlighting
+  {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'}, -- Treesitter
+  'nvim-treesitter/nvim-treesitter-context',
+   -- Language server support
+  'neovim/nvim-lspconfig', -- LSP config
+  'rcarriga/nvim-notify', -- LSP notifications
+  'hrsh7th/cmp-nvim-lsp', -- LSP source for nvim-cmp
+  'hrsh7th/nvim-cmp', -- Autocompletion plugin
+  'L3MON4D3/LuaSnip',
+  'saadparwaiz1/cmp_luasnip',
+  'stevearc/dressing.nvim', -- nicer UI for code actions; unfortunately typrhas rendering errors
+  'simrat39/symbols-outline.nvim', -- symbol outline of current file
+  'mfussenegger/nvim-dap', --  Debug adapter
+});
 
 vim.cmd("silent! colorscheme molokai")
 
@@ -156,6 +175,19 @@ vim.keymap.set('n', 's', '<Plug>(easymotion-overwin-f2)')
 
 vim.g.strip_whitespace_confirm = 0
 vim.g.strip_whitespace_on_save = 1
+
+--------------------------------------------
+-- Nvim tree
+--------------------------------------------
+require("nvim-tree").setup({
+  update_focused_file = {
+    enable = true,
+  },
+  live_filter = {
+    always_show_folders = false,
+  }
+})
+vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>")
 
 --------------------------------------------
 -- Telescope
@@ -232,9 +264,22 @@ vim.keymap.set('n', '<leader>n', require('telescope').extensions.notify.notify)
 --------------------------------------------
 -- Treesitter
 --------------------------------------------
-
 require('nvim-treesitter.configs').setup({
-    ensure_installed = { "c", "cpp", "typescript", "lua", "rust", "bash", "markdown", "rst", "json", "yaml", "proto"},
+    ensure_installed = {
+       -- System programming
+       "c", "cpp", "rust", "proto",
+        -- Web development
+       "typescript", "css", "html", "sql",
+       -- Scripting
+       "python", "bash",
+       -- Build systems
+       "cmake", "starlark",
+       -- Neovim itself
+       "lua", "vimdoc",
+       -- Text editing
+       "markdown", "rst", "latex",
+       -- File format
+       "json", "yaml"},
     sync_install = false,
     auto_install = false,
     highlight = {
@@ -242,9 +287,22 @@ require('nvim-treesitter.configs').setup({
     },
 })
 
+-- Use treesitter for code folding
 vim.opt.foldlevelstart=999
 vim.opt.foldmethod="expr"
 vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()")
+
+
+-- Use treesitter to display context
+require('treesitter-context').setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 6, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 1, -- Maximum number of lines to show for a single context
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'topline',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+}
 
 --------------------------------------------
 -- LSP support
@@ -313,31 +371,51 @@ vim.keymap.set('n', '<space>q', telescope_builtin.diagnostics)
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client == nil then
+      return
+    end
 
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf }
-    vim.keymap.set('n', '<leader>rD', vim.lsp.buf.declaration)
-    vim.keymap.set('n', '<leader>rd', vim.lsp.buf.type_definition)
-    vim.keymap.set('n', '<leader>rf', require('telescope.builtin').lsp_references)
-    vim.keymap.set('n', '<leader>rj', require('telescope.builtin').lsp_definitions)
-    vim.keymap.set('n', '<F3>', "<cmd>ClangdSwitchSourceHeader<CR>")
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
+    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition)
+    vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references)
+    vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions)
     vim.keymap.set('n', 'K', vim.lsp.buf.hover)
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
-    vim.keymap.set('n', '<leader>rw', vim.lsp.buf.rename)
-    vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action)
-    -- vim.keymap.set('v', '<leader>ca', vim.lsp.buf.range_code_action)
-    vim.keymap.set('n', '<leader>f', function()
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
+    vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action)
+    vim.keymap.set({'n', 'v'}, '<leader>f', function()
       vim.lsp.buf.format { async = true }
     end, opts)
-    -- vim.keymap.set('v', '<leader>f', vim.lsp.buf.range_formatting)
+
+    -- Inlay hints
+    --if client.server_capabilities.inlayHintProvider then
+    --  vim.lsp.inlay_hint.enable(ev.buf, true)
+    --  -- Allow to toggle inlay hints
+    --  vim.keymap.set('n', '<leader>i', function ()
+    --    local inlayHintEnabled = not vim.lsp.inlay_hint.is_enabled()
+    --    vim.lsp.inlay_hint.enable(ev.buf, inlayHintEnabled)
+    --  end)
+    --end
+
+    -- Trigger highlighting of symbol under cursor by keeping the cursor still
+    if client.server_capabilities.documentHighlightProvider then
+      vim.api.nvim_create_autocmd('CursorHold', { callback = vim.lsp.buf.document_highlight})
+      vim.api.nvim_create_autocmd('CursorHoldI', { callback = vim.lsp.buf.document_highlight})
+      vim.api.nvim_create_autocmd('CursorMoved', { callback = vim.lsp.buf.clear_references})
+    end
+
+    -- clangd-specific key bindings
+    if client.name == "clangd" then
+      vim.keymap.set('n', 'g<Tab>', "<cmd>ClangdSwitchSourceHeader<CR>")
+    end
   end
 })
 
-
-vim.lsp.set_log_level("info")
+vim.lsp.set_log_level("warn")
 
 --local lspconfig = require'lspconfig'
 --lspconfig.ccls.setup {
@@ -347,6 +425,7 @@ vim.lsp.set_log_level("info")
 
 nvim_lsp["clangd"].setup {
   capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  filetypes = {'c', 'cpp', 'objc', 'objcpp', 'cuda'},
   -- to debug: '-log:verbose'
   -- --hidden-features
   --cmd = { '/usr/lib/llvm-17/bin/clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
@@ -358,10 +437,8 @@ nvim_lsp["clangd"].setup {
      '--parse-forwarding-functions',
      '--compile-commands-dir=./bazel-bin/',
      '--clang-tidy',
-     '--clang-tidy-checks=*',
      '-j=14',
      '--background-index',
-     '--pch-storage=True',
      '--header-insertion-decorators',
      '--header-insertion=iwyu'
   },
