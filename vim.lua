@@ -167,9 +167,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end
 })
 
---Nerdree
-vim.keymap.set("n", "<C-n>", ":NERDTreeToggle<CR>")
-
 -- Easymotion
 vim.keymap.set('n', 's', '<Plug>(easymotion-overwin-f2)')
 
@@ -392,14 +389,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
 
     -- Inlay hints
-    --if client.server_capabilities.inlayHintProvider then
-    --  vim.lsp.inlay_hint.enable(ev.buf, true)
-    --  -- Allow to toggle inlay hints
-    --  vim.keymap.set('n', '<leader>i', function ()
-    --    local inlayHintEnabled = not vim.lsp.inlay_hint.is_enabled()
-    --    vim.lsp.inlay_hint.enable(ev.buf, inlayHintEnabled)
-    --  end)
-    --end
+    if client.server_capabilities.inlayHintProvider then
+      vim.lsp.inlay_hint.enable(ev.buf, true)
+      -- Allow to toggle inlay hints
+      vim.keymap.set('n', '<leader>i', function ()
+        local inlayHintEnabled = not vim.lsp.inlay_hint.is_enabled()
+        vim.lsp.inlay_hint.enable(ev.buf, inlayHintEnabled)
+      end)
+    end
 
     -- Trigger highlighting of symbol under cursor by keeping the cursor still
     if client.server_capabilities.documentHighlightProvider then
@@ -429,22 +426,9 @@ nvim_lsp["clangd"].setup {
   -- to debug: '-log:verbose'
   -- --hidden-features
   --cmd = { '/usr/lib/llvm-17/bin/clangd', '--enable-config', '--use-dirty-headers', '--limit-references=10000', '--limit-results=10000', '--hidden-features'},
-  cmd = {
-     'clangd-18',
-     '--enable-config',
-     '--limit-references=10000',
-     '--limit-results=10000',
-     '--parse-forwarding-functions',
-     '--compile-commands-dir=./bazel-bin/',
-     '--clang-tidy',
-     '-j=14',
-     '--background-index',
-     '--header-insertion-decorators',
-     '--header-insertion=iwyu'
-  },
-  on_attach = on_attach,
+  cmd = { 'clangd', '--enable-config', '--limit-references=10000', '--limit-results=10000', '--parse-forwarding-functions'},
   flags = {
-    debounce_text_changes = 1000,
+    debounce_text_changes = 300,
   }
 }
 
