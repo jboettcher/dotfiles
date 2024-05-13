@@ -390,11 +390,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Inlay hints
     if client.server_capabilities.inlayHintProvider then
-      vim.lsp.inlay_hint.enable(ev.buf, true)
+      vim.lsp.inlay_hint.enable(true)
       -- Allow to toggle inlay hints
       vim.keymap.set('n', '<leader>i', function ()
-        local inlayHintEnabled = not vim.lsp.inlay_hint.is_enabled()
-        vim.lsp.inlay_hint.enable(ev.buf, inlayHintEnabled)
+        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
       end)
     end
 
@@ -413,12 +412,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 vim.lsp.set_log_level("warn")
-
---local lspconfig = require'lspconfig'
---lspconfig.ccls.setup {
---   name = "ccls", --String name
---
---}
 
 nvim_lsp["clangd"].setup {
   capabilities = require('cmp_nvim_lsp').default_capabilities(),

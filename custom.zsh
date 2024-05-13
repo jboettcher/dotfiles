@@ -1,7 +1,7 @@
 alias vim="nvim"
 export EDITOR="nvim"
+export LC_ALL=C # for Hyper tests to work
 export LANG=en_US.utf-8
-export LC_ALL=en_US.utf-8
 
 case "$USER" in
   caravan)
