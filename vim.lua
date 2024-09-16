@@ -428,20 +428,26 @@ nvim_lsp["clangd"].setup {
 }
 
 vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
-  local client = vim.lsp.get_client_by_id(ctx.client_id)
+  local clients
+  clients = vim.lsp.get_clients({
+     id = ctx.client_id
+  })
   local lvl = ({
     'ERROR',
     'WARN',
     'INFO',
     'DEBUG',
   })[result.type]
-  vim.notify(result.message, lvl, {
-    title = 'LSP | ' .. client.name,
-    timeout = 10000,
-    keep = function()
-      return lvl == 'ERROR' or lvl == 'WARN'
-    end,
-  })
+
+  for _, client in ipairs(clients) do
+     vim.notify(result.message, lvl, {
+       title = 'LSP | ' .. client.name,
+       timeout = 10000,
+       keep = function()
+         return lvl == 'ERROR' or lvl == 'WARN'
+       end,
+     })
+  end
 end
 
 
@@ -493,7 +499,6 @@ end
 
 vim.lsp.handlers["$/progress"] = function(_, result, ctx)
   local client_id = ctx.client_id
-
   local val = result.value
 
   if not val.kind then
@@ -506,7 +511,7 @@ vim.lsp.handlers["$/progress"] = function(_, result, ctx)
     local message = format_message(val.message, val.percentage)
 
     notif_data.notification = vim.notify(message, "info", {
-      title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
+      title = format_title(val.title, client_id),
       icon = spinner_frames[1],
       timeout = false,
       hide_from_history = false,
