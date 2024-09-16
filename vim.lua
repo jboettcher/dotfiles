@@ -368,10 +368,10 @@ vim.keymap.set('n', '<space>q', telescope_builtin.diagnostics)
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client == nil then
-      return
-    end
+    local clients
+     clients = vim.lsp.get_clients({
+        id = ev.data.client_id
+    })
 
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -388,26 +388,28 @@ vim.api.nvim_create_autocmd('LspAttach', {
       vim.lsp.buf.format { async = true }
     end, opts)
 
-    -- Inlay hints
-    if client.server_capabilities.inlayHintProvider then
-      vim.lsp.inlay_hint.enable(true)
-      -- Allow to toggle inlay hints
-      vim.keymap.set('n', '<leader>i', function ()
-        vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-      end)
-    end
+    for _, client in ipairs(clients) do
+       -- Inlay hints
+       if client.server_capabilities.inlayHintProvider then
+         vim.lsp.inlay_hint.enable(true)
+         -- Allow to toggle inlay hints
+         vim.keymap.set('n', '<leader>i', function ()
+           vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+         end)
+       end
 
-    -- Trigger highlighting of symbol under cursor by keeping the cursor still
-    if client.server_capabilities.documentHighlightProvider then
-      vim.api.nvim_create_autocmd('CursorHold', { callback = vim.lsp.buf.document_highlight})
-      vim.api.nvim_create_autocmd('CursorHoldI', { callback = vim.lsp.buf.document_highlight})
-      vim.api.nvim_create_autocmd('CursorMoved', { callback = vim.lsp.buf.clear_references})
-    end
+       -- Trigger highlighting of symbol under cursor by keeping the cursor still
+       if client.server_capabilities.documentHighlightProvider then
+         vim.api.nvim_create_autocmd('CursorHold', { callback = vim.lsp.buf.document_highlight})
+         vim.api.nvim_create_autocmd('CursorHoldI', { callback = vim.lsp.buf.document_highlight})
+         vim.api.nvim_create_autocmd('CursorMoved', { callback = vim.lsp.buf.clear_references})
+       end
 
-    -- clangd-specific key bindings
-    if client.name == "clangd" then
-      vim.keymap.set('n', 'g<Tab>', "<cmd>ClangdSwitchSourceHeader<CR>")
-    end
+       -- clangd-specific key bindings
+       if client.name == "clangd" then
+         vim.keymap.set('n', 'g<Tab>', "<cmd>ClangdSwitchSourceHeader<CR>")
+       end
+   end
   end
 })
 
