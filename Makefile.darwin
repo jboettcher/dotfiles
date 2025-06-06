@@ -68,7 +68,7 @@ install-config: create-directories
 	@ln -sf ${MAKEFILE_DIR}/git.conf ${HOME}/.gitconfig
 	@ln -sf ${MAKEFILE_DIR}/gdb.conf ${HOME}/.gdbinit
 	@ln -sf ${MAKEFILE_DIR}/ssh.conf ${HOME}/.ssh/config
-	@ln -sf ${MAKEFILE_DIR}/vim.conf ${HOME}/.config/nvim/init.vim
+	@ln -sf ${MAKEFILE_DIR}/vim.lua ${HOME}/.config/nvim/init.lua
 	@ln -sf ${MAKEFILE_DIR}/coc-settings.json ${HOME}/.config/nvim/coc-settings.json
 	@ln -sf ${MAKEFILE_DIR}/custom.zsh ${HOME}/.oh-my-zsh/custom/custom.zsh
 	@ln -sf ${MAKEFILE_DIR}/plugins.zsh ${HOME}/.oh-my-zsh/custom/plugins.zsh
