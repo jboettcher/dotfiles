@@ -30,6 +30,9 @@ case `uname` in
        if [ -d "$HOME/.local/bin" ] ; then
           PATH="$PATH:$HOME/.local/bin"
        fi
+       if [ -d "$HOME/bin" ] ; then
+         PATH="$PATH:$HOME/bin"
+       fi
        alias idea='/home/j.boettcher/Programs/idea-IC-223.7571.182/bin/idea.sh'
        export ASAN_OPTIONS=detect_container_overflow=0
   ;;
