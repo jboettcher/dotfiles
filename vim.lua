@@ -39,7 +39,6 @@ vim.opt.scrolloff = 2 --keep 2 lines visible over/below the cursor
 vim.opt.sidescrolloff = 2
 vim.opt.smoothscroll = true
 
-
 --disable mouse
 vim.opt.mouse=""
 
@@ -74,12 +73,6 @@ vim.keymap.set("n", "Q", "")
 vim.keymap.set("n", "x", '"_x')
 vim.keymap.set("n", "c", '"_c')
 
------------------------
--- Enhanced keyboard mappings
-vim.keymap.set('n', 'tc', ':tabnew<CR>')
-vim.keymap.set('n', 'tp', ':tabprevious<CR>')
-vim.keymap.set('n', 'tn', ':tabnext<CR>')
-
 --------------------------
 -- General, useful shortcuts
 --------------------------
@@ -99,6 +92,10 @@ vim.keymap.set("v", "<leader>'", "<esc>`<i'<esc>`>i'<esc>")
 vim.keymap.set("v", "<leader>`", "<esc>`<i`<esc>`>i`<esc>")
 --use jk to exit insert mode
 vim.keymap.set("i", "jk", "<esc>")
+--tab navigation
+vim.keymap.set('n', 'tc', ':tabnew<CR>')
+vim.keymap.set('n', 'tp', ':tabprevious<CR>')
+vim.keymap.set('n', 'tn', ':tabnext<CR>')
 --create mappings to edit the vimrc easily
 vim.keymap.set("n", "<leader>ev", ":edit $MYVIMRC<cr>")
 
@@ -110,7 +107,7 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 --------------------------
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -132,9 +129,6 @@ require("lazy").setup({
   'tomasr/molokai', -- molokai theme
   {'kyazdani42/nvim-web-devicons', config = function () require('nvim-web-devicons').setup() end }, -- icons in Telescope
    -- General editing/navigation
-  'easymotion/vim-easymotion', -- jump to characters in file quickly
-  'ntpeters/vim-better-whitespace', -- remove trailing white spaces
-  'Raimondi/delimitMate', -- automatically add matchin delimiters
   'nvim-lua/plenary.nvim', -- Dependency of other plugins
   {'nvim-telescope/telescope-fzf-native.nvim', build = 'make', },
   'nvim-telescope/telescope.nvim', -- fuzzy matcher
@@ -162,7 +156,7 @@ require("lazy").setup({
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
   'stevearc/dressing.nvim', -- nicer UI for code actions; unfortunately typrhas rendering errors
-  'simrat39/symbols-outline.nvim', -- symbol outline of current file
+  'hedyhli/outline.nvim', -- symbol outline of current file
   'mfussenegger/nvim-dap', --  Debug adapter
 });
 
@@ -170,9 +164,6 @@ vim.g.git_messenger_floating_win_opts = { ['border'] = 'single' }
 vim.g.git_messenger_popup_content_margins = false
 
 vim.cmd("silent! colorscheme molokai")
-
--- Easymotion
-vim.keymap.set('n', 's', '<Plug>(easymotion-overwin-f2)')
 
 vim.g.strip_whitespace_confirm = 1
 vim.g.strip_whitespace_on_save = 1
@@ -259,7 +250,7 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'diff', {'diagnostics', symbols = { error = " ", warn = " ", hint = " ", info = " " }}},
+    lualine_b = {'diff', {'diagnostics', symbols = { error = " ", warn = " ", hint = " ", info = " " }}},
     lualine_c = {{'filename', path = 1}},
     lualine_x = {'searchcount'},
     lualine_y = {'progress'},
@@ -287,10 +278,10 @@ notify.setup({
     max_width = 80,
     max_height = 20,
     icons = {
-        ERROR = "",
-        WARN = "",
-        INFO = "",
-        DEBUG = "",
+        ERROR = "",
+        WARN = "",
+        INFO = "",
+        DEBUG = "",
         TRACE = "✎",
     }
 })
@@ -330,7 +321,7 @@ require('nvim-treesitter.configs').setup({
 -- Use treesitter for code folding
 vim.opt.foldlevelstart=999
 vim.opt.foldmethod="expr"
-vim.api.nvim_command("set foldexpr=nvim_treesitter#foldexpr()")
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 
 -- Use treesitter to display context
@@ -358,7 +349,7 @@ local nvim_lsp = require('lspconfig')
 -----------------------
 -- Configure diagnostics
 
-local signs = { Error = "", Warn = "", Hint = "", Info = "" }
+local signs = { Error = "", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
@@ -386,36 +377,35 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Buffer local mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition)
-    vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references)
-    vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help)
-    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename)
-    vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action)
-    vim.keymap.set({'n', 'v'}, '<leader>f', function()
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, opts)
+    vim.keymap.set('n', 'gd', require('telescope.builtin').lsp_definitions, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set({'n', 'v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set({'n', 'v'}, '<leader>F', function()
       vim.lsp.buf.format { async = true }
     end, opts)
 
     -- Inlay hints
     if client.server_capabilities.inlayHintProvider then
       vim.lsp.inlay_hint.enable(true, {bufnr = ev.buf})
-      -- Allow to toggle inlay hints
       vim.keymap.set('n', '<leader>i', function ()
         local inlayHintEnabled = not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf })
         vim.lsp.inlay_hint.enable(inlayHintEnabled, {bufnr = ev.buf})
-      end)
+      end, opts)
     end
 
     -- Trigger highlighting of symbol under cursor by keeping the cursor still
     if client.server_capabilities.documentHighlightProvider then
-      vim.keymap.set('n', '<leader>?', vim.lsp.buf.document_highlight)
-      vim.api.nvim_create_autocmd('CursorMoved', { callback = vim.lsp.buf.clear_references})
+      vim.keymap.set('n', '<leader>?', vim.lsp.buf.document_highlight, opts)
+      vim.api.nvim_create_autocmd('CursorMoved', { buffer = ev.buf, callback = vim.lsp.buf.clear_references})
     end
 
     -- clangd-specific key bindings
     if client.name == "clangd" then
-      vim.keymap.set('n', 'g<Tab>', "<cmd>ClangdSwitchSourceHeader<CR>")
+      vim.keymap.set('n', 'g<Tab>', "<cmd>ClangdSwitchSourceHeader<CR>", opts)
     end
   end
 })
@@ -426,8 +416,8 @@ vim.api.nvim_set_hl(0, 'LspReferenceRead', { bg = '#5555aa', default = true })
 vim.api.nvim_set_hl(0, 'LspReferenceWrite', { bg = '#5555aa', default = true })
 
 -- Symbols outline
-require("symbols-outline").setup()
-vim.keymap.set('n', '<leader>s', "<cmd>SymbolsOutline<cr>")
+require("outline").setup()
+vim.keymap.set('n', '<leader>s', "<cmd>Outline<cr>")
 
 -----------------------
 -- Setup jsonls
@@ -444,7 +434,7 @@ local clangd_alternative_paths = {
    '/usr/local/bin/clangd',
 }
 for _, p in pairs(clangd_alternative_paths) do
-   if vim.loop.fs_stat(p) then
+   if vim.uv.fs_stat(p) then
       clangd_path = p
       break
    end
@@ -486,7 +476,7 @@ nvim_lsp["lua_ls"].setup({
     if client.workspace_folders then
       path = client.workspace_folders[1].name
     end
-    if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
+    if not vim.uv.fs_stat(path..'/.luarc.json') and not vim.uv.fs_stat(path..'/.luarc.jsonc') then
       client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
         Lua = {
           runtime = {
@@ -563,7 +553,7 @@ cmp.setup({
 -----------------------
 -- LSP notifications
 vim.lsp.handlers['window/showMessage'] = function(_, result, ctx)
-  local client = vim.lsp.get_client_by_id(ctx.client_id)
+  local client = vim.lsp.get_clients({ id = ctx.client_id })[1]
   local lvl = ({
     'ERROR',
     'WARN',
@@ -641,7 +631,7 @@ vim.lsp.handlers["$/progress"] = function(_, result, ctx)
     local message = format_message(val.message, val.percentage)
 
     notif_data.notification = vim.notify(message, "info", {
-      title = format_title(val.title, vim.lsp.get_client_by_id(client_id).name),
+      title = format_title(val.title, vim.lsp.get_clients({ id = client_id })[1].name),
       icon = spinner_frames[1],
       timeout = false,
       hide_from_history = false,
@@ -650,17 +640,18 @@ vim.lsp.handlers["$/progress"] = function(_, result, ctx)
     notif_data.spinner = 1
     update_spinner(client_id, result.token)
   elseif val.kind == "report" and notif_data then
-    notif_data.notification = vim.notify(format_message(val.message, val.percentage), "info", {
-      replace = notif_data.notification,
-      hide_from_history = false,
-    })
+    local report_opts = { hide_from_history = false }
+    if notif_data.notification then
+      report_opts.replace = notif_data.notification
+    end
+    notif_data.notification = vim.notify(format_message(val.message, val.percentage), "info", report_opts)
   elseif val.kind == "end" and notif_data then
+    local end_opts = { icon = "", timeout = 3000 }
+    if notif_data.notification then
+      end_opts.replace = notif_data.notification
+    end
     notif_data.notification =
-      vim.notify(val.message and format_message(val.message) or "Complete", "info", {
-        icon = "",
-        replace = notif_data.notification,
-        timeout = 3000,
-      })
+      vim.notify(val.message and format_message(val.message) or "Complete", "info", end_opts)
 
     notif_data.spinner = nil
   end
