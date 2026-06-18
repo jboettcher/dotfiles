@@ -144,7 +144,7 @@ require("lazy").setup({
   {'lewis6991/gitsigns.nvim', config = function () require('gitsigns').setup() end } , -- gutter, highlighting uncommitted changes
 
    -- languages/syntax highlighting
-  {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'}, -- Treesitter
+  {'nvim-treesitter/nvim-treesitter', lazy = false, build = ':TSUpdate'}, -- Treesitter
   'nvim-treesitter/nvim-treesitter-context',
    -- Language server support
   'williamboman/mason.nvim', -- Installation of LSP servers
@@ -293,35 +293,36 @@ vim.keymap.set('n', '<leader>n', require('telescope').extensions.notify.notify)
 -- Treesitter
 --------------------------------------------
 
-require('nvim-treesitter.configs').setup({
-    ensure_installed = {
-       -- System programming
-       "c", "cpp", "rust", "proto",
-        -- Web development
-       "typescript", "css", "html", "sql",
-       -- Java ecosystem
-       "java", "scala",
-       -- Scripting
-       "python", "bash",
-       -- Build systems
-       "cmake", "starlark",
-       -- Neovim itself
-       "lua", "vimdoc",
-       -- Text editing
-       "markdown", "rst", "latex",
-       -- File format
-       "json", "yaml"},
-    sync_install = false,
-    auto_install = false,
-    highlight = {
-        enable = true,
-    },
+require('nvim-treesitter').install({
+   -- System programming
+   "c", "cpp", "rust", "proto",
+   -- Web development
+   "typescript", "css", "html", "sql",
+   -- Java ecosystem
+   "java", "scala",
+   -- Scripting
+   "python", "bash",
+   -- Build systems
+   "cmake", "starlark",
+   -- Neovim itself
+   "lua", "vimdoc",
+   -- Text editing
+   "markdown", "rst", "latex",
+   -- File format
+   "json", "yaml",
 })
 
--- Use treesitter for code folding
-vim.opt.foldlevelstart=999
-vim.opt.foldmethod="expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- Use treesitter for code folding (only on buffers with an installed parser)
+vim.opt.foldlevelstart = 999
+
+vim.api.nvim_create_autocmd('FileType', {
+  callback = function(ev)
+    if pcall(vim.treesitter.start, ev.buf) then
+      vim.wo[0][0].foldmethod = "expr"
+      vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    end
+  end,
+})
 
 
 -- Use treesitter to display context
@@ -349,14 +350,19 @@ local nvim_lsp = require('lspconfig')
 -----------------------
 -- Configure diagnostics
 
-local signs = { Error = "", Warn = "", Hint = "", Info = "" }
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.HINT] = "",
+      [vim.diagnostic.severity.INFO] = "",
+    },
+  },
+})
 
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1 }) end)
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1 }) end)
 vim.keymap.set('n', '<space>q', telescope_builtin.diagnostics)
 
 -----------------------
