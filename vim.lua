@@ -163,15 +163,8 @@ require("lazy").setup({
 vim.g.git_messenger_floating_win_opts = { ['border'] = 'single' }
 vim.g.git_messenger_popup_content_margins = false
 
+vim.opt.background = "dark"
 vim.cmd("silent! colorscheme molokai")
-
--- molokai predates treesitter capture groups, so several @-prefixed groups
--- fall through to Neovim's default (NvimDarkGrey2) — unreadable on dark bg.
--- Link them back to the classic syntax groups molokai actually styles.
-vim.api.nvim_set_hl(0, '@variable',           { link = 'Identifier' })
-vim.api.nvim_set_hl(0, '@variable.parameter', { link = 'Identifier' })
-vim.api.nvim_set_hl(0, '@variable.member',    { link = 'Identifier' })
-vim.api.nvim_set_hl(0, '@property',           { link = 'Identifier' })
 
 vim.g.strip_whitespace_confirm = 1
 vim.g.strip_whitespace_on_save = 1
